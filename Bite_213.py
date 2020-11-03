@@ -83,36 +83,24 @@ bite_209_es_fixed = '''<p>Su equipo utiliza <code>Sphinx</code> y quiere que ust
 
 
 
-def fix_translation(org_text=bite_202_en, trans_text=bite_202_de):
+def fix_translation(org_text=bite_15_en, trans_text=bite_15_it):
     """Receives original English text as well as text returned by translator.
        Parse trans_text restoring the original (English) code (wrapped inside
        code and pre tags) into it. Return the fixed translation str
     """
-    #pre_corrections = re.findall(r'<pre>[A-Za-z0-9\s\.]+</pre>',org_text)
-    pre_corrections = re.findall(r'<pre>[\s\S]+</pre>',org_text)
+    pre_corrections = re.findall(r'<pre>[\w\W]*?[\s\S]*?</pre>',org_text)
     pre_corrections = ' '.join(pre_corrections)
-    #print(pre_corrections)
-    code_corrections = re.findall(r'<code>[\w\W]*?</code>+',org_text)
-    #print(code_corrections)
-    t_text = re.sub(r'<pre>\s?[a-zA-Z0-9\.\s]+[\w\W]+?</pre>',pre_corrections,trans_text)
-    trans_text_code_subs = re.findall(r'<code>[\w\W]*?</code>',t_text)
-    #print(trans_text_code_subs)
-
+    code_corrections = re.findall(r'<code>[\w\W]*?</code>',org_text)
+    t_text = re.sub(r'<pre>[\w\W]*?\s?[a-zA-Z0-9\.\s]+[\w\W]+?[\s\S]*?</pre>',pre_corrections,trans_text)
+    trans_text_code_subs = re.findall(r'<code>[\w\W]*?</code>',trans_text)
+    
     i = 0
     for item in trans_text_code_subs:
         if item in t_text:
             t_text = t_text.replace(item, code_corrections[i])
         i += 1
     
-    return t_text == bite_202_de_fixed
+    return t_text
 
-    #print('t_text:\n\n\n')
-    #print(t_text)
-    #print()
-    #print('expected:\n\n')
-    #print(bite_202_de_fixed)
     
-
-
-
 print(fix_translation())
