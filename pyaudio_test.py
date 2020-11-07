@@ -1,7 +1,7 @@
 import pyaudio
 import wave
 import sys
-import pitch
+import librosa
 
 def read_and_write_audio():
     CHUNK = 1024
@@ -42,8 +42,12 @@ def read_and_write_audio():
 
 def get_pitch(filename= read_and_write_audio()):
     #filename = read_and_write_audio()
-    p = pitch.find_pitch(filename)
-    print(f'pitch = {p}')
+    x, sr_ = librosa.load(filename)
+    pitches, mags = librosa.piptrack(y=x,sr=sr_)
+    index = mags[:,127].argmax()
+    pitch = pitches[index, 127]
+    return pitch
 
 
-get_pitch()
+print(get_pitch())
+#read_and_write_audio()
