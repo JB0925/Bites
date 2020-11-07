@@ -41,13 +41,11 @@ def read_and_write_audio():
     return filename
 
 def get_pitch(filename= read_and_write_audio()):
-    #filename = read_and_write_audio()
     x, sr_ = librosa.load(filename)
     pitches, mags = librosa.piptrack(y=x,sr=sr_)
-    index = mags[:,127].argmax()
-    pitch = pitches[index, 127]
+    index = mags[:,128].argmax()
+    pitch = pitches[index, 128]
     return pitch
 
 
 print(get_pitch())
-#read_and_write_audio()
