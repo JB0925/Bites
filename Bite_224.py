@@ -18,8 +18,8 @@ def get_sentences(text):
     """Return a list of sentences as extracted from the text passed in.
        A sentence starts with [A-Z] and ends with [.?!]"""
     #sentences = re.findall(r'([A-Z][^\.!?]*[\.!?])',text)
-    sentences = re.findall(r'([A-Za-z0-9,\s]+[A-Za-z0-9\.?!()]{2,})',text)
+    sentences = re.findall(r'([A-Za-z0-9,\s]+[A-Za-z0-9\.?!()]+)',text)
     return [sentence.replace('\n',' ').strip() for sentence in sentences]
     
 
-print(get_sentences(TEXT)) 
+print(get_sentences(TEXT_WITH_DOTS)) 

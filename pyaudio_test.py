@@ -45,7 +45,10 @@ def get_pitch(filename= read_and_write_audio()):
     pitches, mags = librosa.piptrack(y=x,sr=sr_)
     index = mags[:,128].argmax()
     pitch = pitches[index, 128]
-    return pitch
+    note_name = librosa.hz_to_note(pitch)
+    if len(note_name) > 2:
+        return note_name[0:2]
+    return note_name[0]
 
 
 print(get_pitch())
