@@ -52,4 +52,4 @@ def get_pitch(filename= read_and_write_audio()):
     return note_name[0]
 
 
-print(get_pitch())
+
