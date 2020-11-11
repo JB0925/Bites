@@ -17,9 +17,22 @@ dot (.) should not end this sentence, the next one should. Have fun!
 def get_sentences(text):
     """Return a list of sentences as extracted from the text passed in.
        A sentence starts with [A-Z] and ends with [.?!]"""
-    #sentences = re.findall(r'([A-Z][^\.!?]*[\.!?])',text)
-    sentences = re.findall(r'([A-Za-z0-9,\s]+[A-Za-z0-9\.?!()]+)',text)
-    return [sentence.replace('\n',' ').strip() for sentence in sentences]
+    new_sentences = []
+    things = re.findall(r'\.\s[A-Z]',text)
+    sentences = re.split(r'\.\s[A-Z]',text)
+    sentences = [sentence.replace('\n',' ').strip() for sentence in sentences]
+    
+    for i in range(len(things)):
+        if '!' not in sentences[i+1] and '?' not in sentences[i+1]:
+            sentences[i+1] = things[i][2] + sentences[i+1] +'.'
+        else:
+            sentences[i+1] = things[i][2] + sentences[i+1]
+        new_sentences.append(sentences[i+1])
+    
+    new_sentences.insert(0, sentences[0] + '.')
+    
+    return new_sentences
+
     
 
-print(get_sentences(TEXT_WITH_DOTS)) 
+print(get_sentences(TEXT)) 
