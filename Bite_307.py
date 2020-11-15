@@ -121,6 +121,7 @@ class DB:
 
         self.cursor.execute(f'DELETE FROM {self.table} WHERE {self.target[0]} = {self.target[1]}')
 
+    
     def insert(self, table: str, values: List[Tuple]):
         """Inserts one or multiple new records into the database.
 
@@ -149,7 +150,16 @@ class DB:
             SchemaError: If a value does not respect the table schema or
                 if there are more values than columns for the given table.
         """
-        raise NotImplementedError("You have to implement this method first.")
+        self.table = table
+        self.values = values
+        column_names = [description[0] for description in self.cursor.description]
+
+        for item in self.values:
+            if len(item) != len(column_names):
+                raise SchemaError
+
+        self.cursor.executemany(f"INSERT INTO {self.table} VALUES (?,?)", self.values)
+
 
     def select(
         self,
@@ -174,7 +184,37 @@ class DB:
         Returns:
             list: The output returned from the sql command
         """
-        raise NotImplementedError("You have to implement this method first.")
+        self.table = table
+        self.columns = columns
+        self.target = target
+
+        if len(self.columns) == 1:
+            self.columns = ''.join(self.columns)
+        else:
+            self.columns = ','.join(self.columns)
+
+        query = None
+
+        if not self.columns:
+            if self.target:
+                if len(self.target) < 3:
+                    query = db.cursor.execute(f"SELECT * FROM {self.table} WHERE {self.target[0]} = ? ", (self.target[1],),).fetchall()
+                else:
+                    query = db.cursor.execute(f"SELECT * FROM {self.table} WHERE {self.target[0]} {self.target[1]} ?", (self.target[2],),).fetchall()
+            else:
+                query = db.cursor.execute(f"SELECT * FROM {self.table}").fetchall()
+        
+        else:
+            if self.target:
+                if len(self.target) < 3:
+                    query = db.cursor.execute(f"SELECT {self.columns} FROM {self.table} WHERE {self.target[0]} = ?", (self.target[1],),).fetchall()
+                else:
+                    query = db.cursor.execute(f"SELECT {self.columns} FROM {self.table} WHERE {self.target[0]} {self.target[1]} ?", (self.target[2],),).fetchall()
+            
+            else:
+                query = db.cursor.execute(f"SELECT {self.columns} FROM {self.table}").fetchall()
+        
+        return query
 
     def update(self, table: str, new_value: Tuple[str, Any], target: Tuple[str, Any]):
         """Update a record in the database.
@@ -209,4 +249,14 @@ with DB() as db:
     rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
     db.delete(table, ('bitecoins', 15))
     rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
+    items = [('alan', 13), ('sarah', 20), ('susan', 15)]
+    db.insert(table, items)
+    rows = db.cursor.execute("SELECT * FROM ninjas").fetchall()
+    #print(rows)
+    #info = db.cursor.execute("PRAGMA TABLE_INFO(ninjas)").fetchall()
+    #print(info)
+    thing = db.select(table, ['ninja'])
+    print(thing)
+    
+
     
