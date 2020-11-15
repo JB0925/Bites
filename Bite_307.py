@@ -55,7 +55,7 @@ class DB:
     def __enter__(self):
         self.connection = sqlite3.connect(self.location)
         self.cursor = self.connection.cursor()
-
+        
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -88,21 +88,23 @@ class DB:
         key_check = False
         self.table = table
         self.primary_key = primary_key
-        self.schema = schema
-        for item in self.schema:
-            for x in item:
-                if self.primary_key == x:
-                    key_check = True
-                    break
+        self.schema = []
+        if self.primary_key in schema:
+            key_check = True
+        
+        for item in schema.split(','):
+            item = item.split()
+            if 'primary' in item:
+                del item[-1]
+                item[-1] = 'primary key'
+            item = tuple(item)
+            self.schema.append(item)
 
         if not key_check:   
             raise SchemaError ('The provided primary key must be part of the schema.')
         
-        self.cursor.execute(f'CREATE TABLE {self.table}({self.schema})')
+        self.cursor.execute(f'CREATE TABLE {self.table}({schema})')
         
-
-        
-
 
     def delete(self, table: str, target: Tuple[str, Any]):
         """Deletes rows from the table.
@@ -114,7 +116,10 @@ class DB:
                 wanted to remove the row(s) with the year 1999, you would pass it
                 ("year", 1999). Only supports "=" operator in this bite.
         """
-        raise NotImplementedError("You have to implement this method first.")
+        self.table = table
+        self.target = target
+
+        self.cursor.execute(f'DELETE FROM {self.table} WHERE {self.target[0]} = {self.target[1]}')
 
     def insert(self, table: str, values: List[Tuple]):
         """Inserts one or multiple new records into the database.
@@ -193,9 +198,15 @@ class DB:
 
 
 table = 'ninjas'
-pkey = 'primary key'
-schema = [('ninja', SQLiteType.TEXT, pkey), ('bitecoins', SQLiteType.INTEGER)]
+pkey = 'ninja'
+schema = 'ninja TEXT primary key, bitecoins INTEGER'
 
 
 with DB() as db:
     db.create(table, schema, pkey)
+    db.cursor.execute("INSERT INTO ninjas VALUES ('joe', 12)")
+    db.cursor.execute("INSERT INTO ninjas VALUES ('tim', 15)")
+    rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
+    db.delete(table, ('bitecoins', 15))
+    rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
+    
