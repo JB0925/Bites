@@ -90,6 +90,7 @@ class DB:
         self.table = table
         self.primary_key = primary_key
         self.schema = []
+
         if self.primary_key in schema:
             key_check = True
         
@@ -98,8 +99,11 @@ class DB:
             if 'primary' in item:
                 del item[-1]
                 item[-1] = 'primary key'
+            
+            item[1] = 'SQLiteType.' + item[1]
             item = tuple(item)
             self.schema.append(item)
+        
 
         if not key_check:   
             raise SchemaError ('The provided primary key must be part of the schema.')
