@@ -51,6 +51,7 @@ class DB:
 
     def __init__(self, location: Optional[str] = ":memory:"):
         self.location = location
+        self.table_schemas = {}
 
     def __enter__(self):
         self.connection = sqlite3.connect(self.location)
@@ -102,6 +103,8 @@ class DB:
 
         if not key_check:   
             raise SchemaError ('The provided primary key must be part of the schema.')
+
+        self.table_schemas[self.table] = self.schema
         
         self.cursor.execute(f'CREATE TABLE {self.table}({schema})')
         
@@ -188,10 +191,11 @@ class DB:
         self.columns = columns
         self.target = target
 
-        if len(self.columns) == 1:
-            self.columns = ''.join(self.columns)
-        else:
-            self.columns = ','.join(self.columns)
+        if self.columns:
+            if len(self.columns) == 1:
+                self.columns = ''.join(self.columns)
+            else:
+                self.columns = ','.join(self.columns)
 
         query = None
 
@@ -225,7 +229,11 @@ class DB:
                 if you wanted to change "year" to 2001 you would pass it ("year", 2001).
             target (tuple): The row/record to modify. Example ("year", 1991)
         """
-        raise NotImplementedError("You have to implement this method first.")
+        self.table = table
+        self.new_value = new_value
+        self.target = target
+
+        self.cursor.execute(f"UPDATE {self.table} SET {self.new_value[0]} = ? WHERE {self.target[0]} = ?", (self.new_value[1], self.target[1]))
 
     @property
     def num_transactions(self) -> int:
@@ -234,7 +242,7 @@ class DB:
         Returns:
             int: Returns the total number of database rows that have been modified.
         """
-        raise NotImplementedError("You have to implement this method first.")
+        return self.connection.total_changes
 
 
 table = 'ninjas'
@@ -255,8 +263,10 @@ with DB() as db:
     #print(rows)
     #info = db.cursor.execute("PRAGMA TABLE_INFO(ninjas)").fetchall()
     #print(info)
-    thing = db.select(table, ['ninja'])
-    print(thing)
-    
-
-    
+    #thing = db.select(table, ['ninja'])
+    #print(thing)
+    #print(db.num_transactions)
+    db.update(table, ('ninja', 'jesse'), ('bitecoins', '20'))
+    print(db.select(table, ['ninja', 'bitecoins'], ('bitecoins', 20)))
+    print(db.num_transactions)
+    print(db.table_schemas)
