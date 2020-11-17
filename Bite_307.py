@@ -248,8 +248,8 @@ class DB:
 
 table = 'ninjas'
 pkey = 'ninja'
-schema = 'ninja TEXT primary key, bitecoins INTEGER'
-#schema = [('ninja', SQLiteType.TEXT, 'primary key'), ('bitecoins', SQLiteType.INTEGER)]
+#schema = 'ninja TEXT primary key, bitecoins INTEGER'
+schema = [('ninja', SQLiteType.TEXT, 'primary key'), ('bitecoins', SQLiteType.INTEGER)]
 
 
 with DB() as db:
