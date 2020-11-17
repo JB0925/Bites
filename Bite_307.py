@@ -86,31 +86,26 @@ class DB:
         Raises:
             SchemaError: If the given primary key is not part of the schema.
         """
-        key_check = False
         self.table = table
         self.primary_key = primary_key
         self.schema = []
+        self.table_schemas[self.table] = schema
 
-        if self.primary_key in schema:
-            key_check = True
+        for item in schema:
+            for x in item:
+                if x == item[-1] and item != schema[-1]:
+                    x = str(x) + ','
+                x = str(x)
+                if 'SQL' in x:
+                    x = x.split('.')[1]
+                self.schema.append(x)
         
-        for item in schema.split(','):
-            item = item.split()
-            if 'primary' in item:
-                del item[-1]
-                item[-1] = 'primary key'
-            
-            item[1] = 'SQLiteType.' + item[1]
-            item = tuple(item)
-            self.schema.append(item)
-        
-
-        if not key_check:   
+        if self.primary_key not in self.schema:
             raise SchemaError ('The provided primary key must be part of the schema.')
 
-        self.table_schemas[self.table] = self.schema
-        
-        self.cursor.execute(f'CREATE TABLE {self.table}({schema})')
+        name = ' '.join(self.schema)
+    
+        self.cursor.execute(f'CREATE TABLE {self.table}({name})')
         
 
     def delete(self, table: str, target: Tuple[str, Any]):
@@ -164,6 +159,8 @@ class DB:
         for item in self.values:
             if len(item) != len(column_names):
                 raise SchemaError
+        
+        
 
         self.cursor.executemany(f"INSERT INTO {self.table} VALUES (?,?)", self.values)
 
@@ -252,25 +249,30 @@ class DB:
 table = 'ninjas'
 pkey = 'ninja'
 schema = 'ninja TEXT primary key, bitecoins INTEGER'
+#schema = [('ninja', SQLiteType.TEXT, 'primary key'), ('bitecoins', SQLiteType.INTEGER)]
 
 
 with DB() as db:
     db.create(table, schema, pkey)
     db.cursor.execute("INSERT INTO ninjas VALUES ('joe', 12)")
     db.cursor.execute("INSERT INTO ninjas VALUES ('tim', 15)")
-    rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
-    db.delete(table, ('bitecoins', 15))
-    rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
-    items = [('alan', 13), ('sarah', 20), ('susan', 15)]
-    db.insert(table, items)
-    rows = db.cursor.execute("SELECT * FROM ninjas").fetchall()
-    #print(rows)
-    #info = db.cursor.execute("PRAGMA TABLE_INFO(ninjas)").fetchall()
-    #print(info)
-    #thing = db.select(table, ['ninja'])
-    #print(thing)
-    #print(db.num_transactions)
-    db.update(table, ('ninja', 'jesse'), ('bitecoins', '20'))
-    print(db.select(table, ['ninja', 'bitecoins'], ('bitecoins', 20)))
-    print(db.num_transactions)
-    print(db.table_schemas)
+    print(db.select(table))
+    # rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
+    # db.delete(table, ('bitecoins', 15))
+    # rows = db.cursor.execute("SELECT ninja, bitecoins FROM ninjas").fetchall()
+    # items = [('alan', 13), ('sarah', 20), ('susan', 15)]
+    # db.insert(table, items)
+    # rows = db.cursor.execute("SELECT * FROM ninjas").fetchall()
+    # #print(rows)
+    # #info = db.cursor.execute("PRAGMA TABLE_INFO(ninjas)").fetchall()
+    # #print(info)
+    # #thing = db.select(table, ['ninja'])
+    # #print(thing)
+    # #print(db.num_transactions)
+    # db.update(table, ('ninja', 'jesse'), ('bitecoins', '20'))
+    # print(db.select(table, ['ninja', 'bitecoins'], ('bitecoins', 20)))
+    # print(db.num_transactions)
+    # print(db.table_schemas)
+    # stuff = [('jerry', 20), ('steve', 6), ('ralph', 8)]
+    # r = db.insert(table, stuff)
+    # print(db.select(table))
