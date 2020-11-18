@@ -14,24 +14,24 @@ class Matrix(object):
         
         total = 0
         left = self.values
-        larger = None
-        smaller = None
+        # left = None
+        # right = None
 
-        if len(left) >= len(right):
-            larger = left
-            smaller = right
-        else:
-            larger = right
-            smaller = left
+        # if len(left) >= len(right):
+        #     left = left
+        #     right = right
+        # else:
+        #     left = right
+        #     right = left
         
         
-        for i in range(len(larger)):
-            for j in range(len(larger[i])):
-                if larger[i][j] == larger[0][0]:
-                    total += (larger[i][j] * smaller[i][j]) + (larger[i][j] * smaller[i][j+1])
-                    total += (larger[i+1][j] * smaller[i][j]) + (larger[i+1][j] * smaller[i][j+1])
-                    total += (larger[i][j+1] * smaller[i+1][j]) + (larger[i][j+1] * smaller[i+1][j+1])
-                    total += (larger[i+1][j+1] * smaller[i+1][j]) + (larger[i+1][j+1] * smaller[i+1][j+1])
+        for i in range(len(left)):
+            for j in range(len(left[i])):
+                if left[i][j] == left[0][0]:
+                    total += (left[i][j] * right[i][j]) + (left[i][j] * right[i][j+1])
+                    total += (left[i+1][j] * right[i][j]) + (left[i+1][j] * right[i][j+1])
+                    total += (left[i][j+1] * right[i+1][j]) + (left[i][j+1] * right[i+1][j+1])
+                    total += (left[i+1][j+1] * right[i+1][j]) + (left[i+1][j+1] * right[i+1][j+1])
             break
                 
         return total
@@ -53,5 +53,4 @@ y = [[11,12],[13,14]]
 m = Matrix(x)
 m2 = Matrix(y)
 print(m @ m2)
-print(m.values)
-print(m2.values)
+
