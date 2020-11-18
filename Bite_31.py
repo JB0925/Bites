@@ -7,10 +7,13 @@ class Matrix(object):
         return f'<Matrix values="{self.values}">'
     
     def __matmul__(self, other):
+        if isinstance(other, Matrix):
+            right = other.values
+        else:
+            right = other
+        
         total = 0
         left = self.values
-        right = other.values
-        
         larger = None
         smaller = None
 
@@ -32,6 +35,14 @@ class Matrix(object):
             break
                 
         return total
+    
+
+    def __rmatmul__(self, other):
+        m = Matrix(self.values)
+        return m @ other
+    
+
+
 
 
 
@@ -42,3 +53,5 @@ y = [[11,12],[13,14]]
 m = Matrix(x)
 m2 = Matrix(y)
 print(m @ m2)
+print(m.values)
+print(m2.values)
