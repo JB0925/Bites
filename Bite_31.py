@@ -41,7 +41,9 @@ class Matrix(object):
     def __imatmul__(self, other):
         m = Matrix(self.values)
         m = m @ other
-        return m
+        self.values = m
+        return self
+       
     
 
 
@@ -54,15 +56,21 @@ y = [[11,12],[13,14]]
 
 m = Matrix(y)
 m2 = Matrix(x)
-print(m @ m2)
-print(m2 @ m)
-tot = y @ m2
-print(tot)
-type(tot)
+# m3 = m @ m2
+# print(m3.values)
+# # print(m2 @ m)
+# tot = m2 @ y
+# print(tot)
+# # type(tot)
+# print(id(m2))
+# m2 @= m
+# print(m2)
+# print(id(m2))
 m2 @= m
-print(type(m2))
+print(id(m2))
 print(m2)
-
-m3 = m @ m2
-print(m3)
-print(type(m3))
+print(id(m2))
+print(type(m2))
+# m3 = m @ m2
+# print(m3)
+# print(type(m3))
