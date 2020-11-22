@@ -67,8 +67,9 @@ def count_n_reps_or_n_chars_following(text, n=1, char=""):
     
     for i in range(len(text)-1):
         if text[i] != char:
-            if text[i+1] == char:
-                count += 1
+           if list(set(text[i+1:i+1+n]))[0] == char and len(list(set(text[i+1:i+1+n]))) == 1:
+               print(text[i+1:i+1+n])
+               count += 1
 
     return count
 
@@ -85,12 +86,14 @@ def check_surrounding_chars(text, surrounding_chars):
     text = re.findall(r'.', text, re.DOTALL)
 
     for i in range(len(text)-1):
-        if text[i-1] in chars and i != 0:
-            if text[i+1] in chars:
+        if text[i-1] in surrounding_chars and i != 0:
+            if text[i+1] in surrounding_chars:
                 count += 1
     return count
 
 
 f2 = "Kai is mean...aarg"
+ou = "\n\n\nzz newlines\n\n"
+g = "Hello^there"
 print(count_n_repetitions("Ä", 1))
-print(count_n_reps_or_n_chars_following(f2, 2, 'a'))
+print(count_n_reps_or_n_chars_following("zz Don't count double!", 1, 'z'))
