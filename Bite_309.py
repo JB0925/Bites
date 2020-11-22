@@ -87,7 +87,9 @@ class Document:
         Returns:
             Document: The changed document with the merged lines.
         """
-        raise NotImplementedError("You have to fill this method with life.")
+        
+        
+
 
     def add_punctuation(self, punctuation: str, index: int) -> Document:
         """Add punctuation to the end of a sentence.

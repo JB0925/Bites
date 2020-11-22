@@ -56,6 +56,7 @@ y = [[11,12],[13,14]]
 
 m = Matrix(y)
 m2 = Matrix(x)
+print(m2 @ m)
 # m3 = m @ m2
 # print(m3.values)
 # # print(m2 @ m)
@@ -66,11 +67,11 @@ m2 = Matrix(x)
 # m2 @= m
 # print(m2)
 # print(id(m2))
-m2 @= m
-print(id(m2))
-print(m2)
-print(id(m2))
-print(type(m2))
+# m2 @= m
+# print(id(m2))
+# print(m2)
+# print(id(m2))
+# print(type(m2))
 # m3 = m @ m2
 # print(m3)
 # print(type(m3))
