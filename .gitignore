@@ -1,4 +1,5 @@
 # .gitignore
+bite_text.txt
 __pycache__
 *.stackdump
 *.wav

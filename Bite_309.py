@@ -87,8 +87,21 @@ class Document:
         Returns:
             Document: The changed document with the merged lines.
         """
+        lines = ''
+        indices = sorted(indices)
         
+        for i in indices:
+            lines += self.lines[i] + ' '
+            self.lines.remove(self.lines[i])
         
+        self.lines.insert(min(indices), lines)
+
+        with open(self.filename, 'w') as f:
+            for line in self.lines:
+                f.write(line + '\n')
+        return self
+
+
 
 
     def add_punctuation(self, punctuation: str, index: int) -> Document:
@@ -107,10 +120,18 @@ class Document:
             raise ValueError ('Cannot use that punctuation.')
         
         line = self.lines[index]
-        line = self._remove_puctuation(line)
-        line += punctuation
-        self.lines[0] = line
+    
+        if line[-1] in EOL_PUNCTUATION:
+            line = line.replace(line[-1], punctuation)
+        else:
+            line += punctuation
 
+        self.lines[index] = line
+
+        with open(self.filename, 'w') as f:
+            for line in self.lines:
+                f.write(line + '\n')
+        
         return self
 
 
@@ -176,9 +197,13 @@ d.add_line('You need to go home now', 3)
 print(d.lines)
 d.add_line('I can\'t belive she is still barking', 8)
 print(d.lines)
-d.add_line('xyz').swap_lines(2,4)
+d.add_line('xyz.').swap_lines(2,4)
 print(d.lines)
 print(d.words)
 print(d.word_count())
 d.add_punctuation('!', 0)
 print(d.lines)
+print(d.merge_lines([0,1,2]))
+print(d.lines)
+
+d.add_line('Why are you mad', 4).add_punctuation('?', 4)
