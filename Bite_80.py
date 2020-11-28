@@ -41,6 +41,6 @@ def check_equality(list1, list2):
 
 
 a = [1, 2, 3]
-b = [4, 5, 6]
+b = [4, 5, 7]
 
 print(check_equality(a, b))
