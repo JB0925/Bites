@@ -30,8 +30,10 @@ def contains_any_py_chars(input_str):
 def contains_digits(input_str):
     """Receives input string and checks if it contains
        one or more digits."""
-    pass
+    search = re.findall(r'[\d]+', input_str)
+    return len(search) >= 1
 
 
 #print(contains_only_vowels('aaAiIee'))
-print(contains_any_py_chars('123'))
+#print(contains_any_py_chars('123'))
+#print(contains_digits('hello2'))
