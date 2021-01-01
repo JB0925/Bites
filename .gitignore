@@ -3,3 +3,5 @@ bite_text.txt
 __pycache__
 *.stackdump
 *.wav
+algorithms.py 
+example.txt
