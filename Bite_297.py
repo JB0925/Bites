@@ -33,4 +33,3 @@ def rename_keys(data: Dict[Any, Any]) -> Dict[Any, Any]:
 
 
 print(rename_keys(sample))
-print(sample)
