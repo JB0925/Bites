@@ -33,11 +33,5 @@ def get_most_common_domains(emails, common_domains=None):
     return sorted(Counter(email_domains).items(),key=lambda x: x[1], reverse=True)
 
 
-    
-
-
-
-
-#print(get_common_domains())
 print(get_most_common_domains(["a@gmail.es", "b@googlemail.com", "c@somedomain.com",
       "d@somedomain.com", "e@somedomain.com", "f@hotmail.fr"]))
