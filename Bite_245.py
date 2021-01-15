@@ -12,14 +12,6 @@ def generate_improved_xmas_tree(rows=10):
     tree = []
 
     for i in range(1,rows+1):
-        # if i == 1:
-        #     #print(' ' * (width) + STAR)
-        #     tree.append(' ' * (width) + STAR)
-
-        # for j in range(0, width):
-        #     #print(end=' ')
-        #     pass
-        
         width -= 1
 
         if i == 1:
