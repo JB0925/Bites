@@ -3,9 +3,5 @@ bite_text.txt
 __pycache__
 *.stackdump
 *.wav
-<<<<<<< HEAD
 *.txt
-=======
-algorithms.py 
-example.txt
->>>>>>> bite98
+SSH*
